@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Turbo Notepad</title>
+<style>
+@import url('https://fonts.cdnfonts.com/css/pix-pxplus-ibm-vga8');
+
+body {
+  margin: 0;
+  background-color: #0000a8;
+  font-family: 'PxPlus IBM VGA8', monospace;
+  color: #fff;
+  overflow: hidden;
+}
+
+/* ---- LOGIN SCREEN ---- */
+#loginScreen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #0000a8;
+  color: #fff;
+}
+
+#loginBox {
+  border: 2px solid #808080;
+  background-color: #000080;
+  padding: 20px 30px;
+  box-shadow: 3px 3px #404040;
+}
+
+#loginBox h2 {
+  color: #ffff00;
+  margin-top: 0;
+  text-align: center;
+}
+
+#passphrase {
+  width: 200px;
+  border: none;
+  background-color: #0000a8;
+  color: #fff;
+  padding: 4px;
+  font-family: inherit;
+  outline: none;
+}
+
+#enterBtn {
+  margin-top: 10px;
+  padding: 4px 10px;
+  background-color: #0000a8;
+  color: #fff;
+  border: 1px solid #808080;
+  cursor: pointer;
+}
+
+/* ---- MAIN WINDOW ---- */
+#mainWindow {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 500px;
+  background-color: #c0c0c0;
+  color: #000;
+  display: none;
+  box-shadow: 3px 3px #000;
+  border: 2px solid #808080;
+  resize: both;
+  overflow: hidden;
+}
+
+#titleBar {
+  background-color: #0000a8;
+  color: #fff;
+  padding: 4px;
+  cursor: move;
+  user-select: none;
+}
+
+#menuBar {
+  display: flex;
+  background-color: #c0c0c0;
+  border-bottom: 1px solid #808080;
+}
+
+.menu {
+  position: relative;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.menu:hover {
+  background-color: #0000a8;
+  color: #fff;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #c0c0c0;
+  border: 1px solid #000;
+  width: 140px;
+  z-index: 10;
+}
+
+.dropdown div {
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.dropdown div:hover {
+  background-color: #0000a8;
+  color: #fff;
+}
+
+#editor {
+  width: 100%;
+  height: calc(100% - 80px);
+  border: none;
+  resize: none;
+  background-color: #0000a8;
+  color: #fff;
+  font-family: 'PxPlus IBM VGA8', monospace;
+  padding: 4px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+#statusBar {
+  background-color: #c0c0c0;
+  color: #000;
+  padding: 2px 6px;
+  font-size: 12px;
+  border-top: 1px solid #808080;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#fullscreenBtn {
+  padding: 2px 6px;
+  background-color: #0000a8;
+  color: #fff;
+  border: 1px solid #808080;
+  cursor: pointer;
+  font-family: inherit;
+}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div id="loginBox">
+    <h2>Turbo Notepad</h2>
+    <label>Enter Passphrase:</label><br />
+    <input type="password" id="passphrase" /><br />
+    <button id="enterBtn">Enter</button>
+  </div>
+</div>
+
+<div id="mainWindow">
+  <div id="titleBar">Turbo Notepad</div>
+  <div id="menuBar">
+    <div class="menu" data-menu="file">File
+      <div class="dropdown" id="fileMenu">
+        <div id="newFile">New</div>
+        <div id="openFile">Open</div>
+        <div id="saveFile">Save</div>
+        <div id="clearNote">Clear</div>
+        <div id="exitBtn">Exit</div>
+      </div>
+    </div>
+    <div class="menu" data-menu="edit">Edit
+      <div class="dropdown" id="editMenu">
+        <div id="cut">Cut</div>
+        <div id="copy">Copy</div>
+        <div id="paste">Paste</div>
+      </div>
+    </div>
+    <div class="menu" data-menu="search">Search
+      <div class="dropdown"><div>Find</div><div>Replace</div></div>
+    </div>
+    <div class="menu" data-menu="run">Run
+      <div class="dropdown"><div>Run</div><div>Run to Cursor</div></div>
+    </div>
+    <div class="menu" data-menu="compile">Compile
+      <div class="dropdown"><div>Compile</div><div>Make</div></div>
+    </div>
+    <div class="menu" data-menu="debug">Debug
+      <div class="dropdown"><div>Trace</div><div>Step Over</div></div>
+    </div>
+    <div class="menu" data-menu="project">Project
+      <div class="dropdown"><div>Open Project</div><div>Close Project</div></div>
+    </div>
+    <div class="menu" data-menu="options">Options
+      <div class="dropdown"><div>Environment</div><div>Editor</div></div>
+    </div>
+    <div class="menu" data-menu="window">Window
+      <div class="dropdown"><div>Tile</div><div>Cascade</div></div>
+    </div>
+    <div class="menu" data-menu="help">Help
+      <div class="dropdown"><div>Contents</div><div>About</div></div>
+    </div>
+  </div>
+
+  <textarea id="editor" spellcheck="false"></textarea>
+
+  <div id="statusBar">
+    <span id="statusText">Ready</span>
+    <button id="fullscreenBtn">Fullscreen</button>
+  </div>
+</div>
+
+<script>
+let activePass = "";
+const loginScreen = document.getElementById("loginScreen");
+const mainWindow = document.getElementById("mainWindow");
+const editor = document.getElementById("editor");
+const passInput = document.getElementById("passphrase");
+const enterBtn = document.getElementById("enterBtn");
+const statusText = document.getElementById("statusText");
+
+/* ---- LOGIN ---- */
+enterBtn.onclick = () => {
+  const pass = passInput.value.trim();
+  if (!pass) return;
+  activePass = pass;
+  loginScreen.style.display = "none";
+  mainWindow.style.display = "block";
+  editor.value = localStorage.getItem("note_" + activePass) || "";
+  statusText.textContent = "Opened note for: " + activePass;
+};
+
+/* ---- AUTO SAVE ---- */
+editor.addEventListener("input", () => {
+  if (activePass)
+    localStorage.setItem("note_" + activePass, editor.value);
+});
+
+/* ---- MENU BEHAVIOR ---- */
+document.querySelectorAll(".menu").forEach(menu => {
+  menu.addEventListener("click", (e) => {
+    e.stopPropagation();
+    document.querySelectorAll(".dropdown").forEach(d => {
+      if (d !== menu.querySelector(".dropdown")) d.style.display = "none";
+    });
+    const drop = menu.querySelector(".dropdown");
+    if (drop) drop.style.display = drop.style.display === "block" ? "none" : "block";
+  });
+});
+
+document.body.addEventListener("click", () => {
+  document.querySelectorAll(".dropdown").forEach(d => d.style.display = "none");
+});
+
+/* ---- BASIC ACTIONS ---- */
+document.getElementById("clearNote").onclick = () => {
+  editor.value = "";
+  localStorage.removeItem("note_" + activePass);
+};
+
+document.getElementById("exitBtn").onclick = () => {
+  mainWindow.style.display = "none";
+  loginScreen.style.display = "flex";
+  passInput.value = "";
+};
+
+/* ---- DRAG WINDOW ---- */
+const titleBar = document.getElementById("titleBar");
+let offsetX = 0, offsetY = 0, isDown = false;
+
+titleBar.addEventListener("mousedown", (e) => {
+  isDown = true;
+  offsetX = e.clientX - mainWindow.offsetLeft;
+  offsetY = e.clientY - mainWindow.offsetTop;
+});
+document.addEventListener("mouseup", () => isDown = false);
+document.addEventListener("mousemove", (e) => {
+  if (!isDown) return;
+  mainWindow.style.left = (e.clientX - offsetX) + "px";
+  mainWindow.style.top = (e.clientY - offsetY) + "px";
+});
+
+/* ---- FULLSCREEN ---- */
+document.getElementById("fullscreenBtn").onclick = () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+};
+</script>
+</body>
+</html>
+
+
+
+
