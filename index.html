@@ -7,57 +7,72 @@
 <style>
   body {
     margin: 0;
-    font-family: 'Courier New', monospace;
+    font-family: "Courier New", monospace;
     background-color: #000080;
-    color: #ffffff;
+    color: #00ffff;
   }
-  .login-screen, .editor-screen {
+
+  .screen {
     display: none;
-    height: 100vh;
     width: 100%;
+    height: 100vh;
   }
+
   .active {
     display: block;
   }
+
+  /* Login Screen */
   .login-box {
     position: absolute;
-    top: 40%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: #000050;
-    padding: 30px;
     border: 2px solid cyan;
-    border-radius: 4px;
+    padding: 25px 40px;
     text-align: center;
   }
-  .login-box input {
-    background: #001060;
+
+  .login-box h2 {
     color: cyan;
-    border: 1px solid cyan;
-    padding: 6px;
-    width: 200px;
+    margin-bottom: 20px;
   }
+
+  .login-box input {
+    background: #000080;
+    border: 1px solid cyan;
+    color: cyan;
+    padding: 5px;
+    width: 220px;
+    font-family: "Courier New", monospace;
+  }
+
   .login-box button {
     background: cyan;
     color: #000080;
     border: none;
     padding: 5px 15px;
-    margin-top: 10px;
+    margin-top: 15px;
     font-weight: bold;
     cursor: pointer;
   }
+
+  /* Menu Bar */
   .menu-bar {
     background-color: #0000a0;
     color: white;
     padding: 5px;
-    font-size: 14px;
     display: flex;
+    font-size: 14px;
   }
+
   .menu-item {
     margin-right: 20px;
-    position: relative;
     cursor: pointer;
+    position: relative;
   }
+
   .dropdown {
     display: none;
     position: absolute;
@@ -65,53 +80,57 @@
     border: 1px solid cyan;
     top: 20px;
     left: 0;
-    z-index: 10;
   }
+
   .dropdown div {
-    padding: 5px 15px;
+    padding: 5px 20px;
     cursor: pointer;
   }
+
   .dropdown div:hover {
     background-color: cyan;
     color: #000080;
   }
+
   .menu-item:hover .dropdown {
     display: block;
   }
+
+  /* Editor */
   textarea {
     width: 100%;
     height: calc(100vh - 30px);
     background-color: #000000;
-    color: #00ffff;
+    color: cyan;
     border: none;
     outline: none;
-    font-family: 'Courier New', monospace;
-    font-size: 16px;
+    resize: none;
+    font-family: "Courier New", monospace;
+    font-size: 15px;
     padding: 10px;
   }
 </style>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7364281166489312"
-     crossorigin="anonymous"></script>
+<meta name="google-site-verification" content="lPEdVsmleFKwGmAp0QlgZdtGrbpyVzjDmKD5_20y-10" />
 </head>
 <body>
 
-<!-- 🔹 Login Screen -->
-<div id="loginScreen" class="login-screen active">
+<!-- Login Screen -->
+<div id="loginScreen" class="screen active">
   <div class="login-box">
-    <h2>Turbo Notepad Login</h2>
-    <input type="password" id="passphrase" placeholder="Enter your passphrase">
+    <h2>Turbo Notepad</h2>
+    <input type="password" id="passphrase" placeholder="Enter Passphrase">
     <br>
     <button onclick="login()">Enter</button>
   </div>
 </div>
 
-<!-- 🔹 Editor Screen -->
-<div id="editorScreen" class="editor-screen">
+<!-- Notepad Screen -->
+<div id="notepadScreen" class="screen">
   <div class="menu-bar">
     <div class="menu-item">File
       <div class="dropdown">
-        <div onclick="newNote()">New</div>
-        <div onclick="saveNote()">Save</div>
+        <div onclick="newFile()">New</div>
+        <div onclick="saveFile()">Save</div>
         <div onclick="backToLogin()">Back to Login</div>
         <div onclick="exitApp()">Exit</div>
       </div>
@@ -124,62 +143,55 @@
       </div>
     </div>
   </div>
-
-  <textarea id="editor" placeholder="Start typing your note here..."></textarea>
+  <textarea id="editor" placeholder="Start typing..."></textarea>
 </div>
 
 <script>
-  const loginScreen = document.getElementById('loginScreen');
-  const editorScreen = document.getElementById('editorScreen');
-  const editor = document.getElementById('editor');
-  const passInput = document.getElementById('passphrase');
+  const loginScreen = document.getElementById("loginScreen");
+  const notepadScreen = document.getElementById("notepadScreen");
+  const passInput = document.getElementById("passphrase");
+  const editor = document.getElementById("editor");
 
-  // Login logic
   function login() {
     if (passInput.value.trim() !== "") {
-      loginScreen.classList.remove('active');
-      editorScreen.classList.add('active');
+      loginScreen.classList.remove("active");
+      notepadScreen.classList.add("active");
       editor.focus();
     } else {
       alert("Please enter a passphrase!");
     }
   }
 
-  // Press Enter key to login
-  passInput.addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-      login();
-    }
+  passInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") login();
   });
 
-  // Back to login screen
   function backToLogin() {
-    editorScreen.classList.remove('active');
-    loginScreen.classList.add('active');
+    notepadScreen.classList.remove("active");
+    loginScreen.classList.add("active");
     passInput.value = "";
   }
 
-  // Menu functions
-  function newNote() {
-    if (confirm("Clear current note?")) {
+  function newFile() {
+    if (confirm("Clear the current note?")) {
       editor.value = "";
     }
   }
 
-  function saveNote() {
-    alert("Auto-save is enabled. Note saved!");
+  function saveFile() {
+    alert("Auto-save enabled. Your note is saved!");
   }
 
   function cutText() {
-    document.execCommand('cut');
+    document.execCommand("cut");
   }
 
   function copyText() {
-    document.execCommand('copy');
+    document.execCommand("copy");
   }
 
   function pasteText() {
-    document.execCommand('paste');
+    document.execCommand("paste");
   }
 
   function exitApp() {
@@ -193,6 +205,7 @@
 
 </body>
 </html>
+
 
 
 
